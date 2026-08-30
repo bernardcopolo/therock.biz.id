@@ -407,6 +407,39 @@ li {
 .footer-links a:hover { color: #fff; }
 .footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border-color); color: #555; font-size: 0.9em; }
 
+/* Detik Style Layout */
+.detik-layout { display: flex; gap: 40px; margin-top: 60px; }
+.detik-main { flex: 2; }
+.detik-sidebar { flex: 1; }
+
+.list-article { display: flex; gap: 20px; margin-bottom: 25px; padding-bottom: 25px; border-bottom: 1px solid var(--border-color); }
+.list-article img { width: 250px; height: 160px; object-fit: cover; border-radius: 8px; }
+.list-article-content { flex: 1; display: flex; flex-direction: column; }
+.list-article-content h3 { font-size: 1.4em; margin-bottom: 15px; line-height: 1.4; }
+.list-article-content h3 a { color: var(--heading-color); text-decoration: none; }
+.list-article-content h3 a:hover { color: var(--primary-color); }
+
+.category-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin: 40px 0 20px 0; }
+.category-header h2 { color: var(--primary-color); font-size: 1.4em; margin: 0; text-transform: uppercase; }
+.category-header a { color: #888; text-decoration: none; font-size: 0.9em; }
+.category-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.category-card img { width: 100%; height: 140px; object-fit: cover; border-radius: 8px; margin-bottom: 10px; }
+.category-card h3 { font-size: 1em; line-height: 1.4; }
+.category-card h3 a { color: var(--heading-color); text-decoration: none; }
+
+.rek-header { color: var(--primary-color); font-size: 1.2em; border-bottom: 2px solid var(--primary-color); padding-bottom: 10px; margin-bottom: 20px; text-transform: uppercase; font-weight: 800;}
+.rek-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; }
+.rek-card img { width: 100%; height: 100px; object-fit: cover; border-radius: 6px; margin-bottom: 8px; }
+.rek-card .cat { color: var(--primary-color); font-size: 0.75em; text-transform: uppercase; margin-bottom: 5px; font-weight: bold; display: block; }
+.rek-card h4 { font-size: 0.9em; line-height: 1.4; margin: 0; }
+.rek-card h4 a { color: var(--heading-color); text-decoration: none; }
+
+@media (max-width: 900px) {
+    .detik-layout { flex-direction: column; }
+    .list-article { flex-direction: column; }
+    .list-article img { width: 100%; height: auto; }
+}
+
 @media (max-width: 768px) {
     .footer-content { grid-template-columns: 1fr; }
     .subscribe-form { flex-direction: column; }
