@@ -368,12 +368,48 @@ ul, ol {
 li {
     margin-bottom: 15px;
 }
-.footer {
-    background-color: #000;
-    border-top: 1px solid var(--border-color);
+.newsletter-section {
+    background: linear-gradient(135deg, #0f172a 0%, #1e1b4b 100%);
     padding: 60px 20px;
     text-align: center;
-    margin-top: 80px;
+    border-radius: 16px;
+    margin: 80px 0;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+.newsletter-section h2 { font-size: 2.2em; margin-bottom: 15px; }
+.newsletter-section p { color: #94a3b8; margin-bottom: 30px; font-size: 1.1em; }
+.subscribe-form { display: flex; max-width: 500px; margin: 0 auto; gap: 10px; }
+.subscribe-form input { flex-grow: 1; padding: 15px 20px; border-radius: 30px; border: none; outline: none; font-size: 1em; background: rgba(255,255,255,0.1); color: #fff; border: 1px solid rgba(255,255,255,0.2); }
+.subscribe-form input::placeholder { color: #cbd5e1; }
+.subscribe-form button { padding: 15px 30px; border-radius: 30px; border: none; background: var(--primary-color); color: #fff; font-weight: 800; cursor: pointer; transition: background 0.3s; }
+.subscribe-form button:hover { background: var(--primary-hover); }
+
+.footer {
+    background-color: #020202;
+    border-top: 1px solid var(--border-color);
+    padding: 60px 20px 20px 20px;
+    margin-top: 60px;
+}
+.footer-content {
+    max-width: 1300px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 40px;
+    margin-bottom: 40px;
+}
+.footer-col h3 { font-size: 1.2em; margin-bottom: 20px; text-transform: uppercase; letter-spacing: 1px; color: var(--primary-color); }
+.footer-col p { color: #888; line-height: 1.6; }
+.footer-links { list-style: none; padding: 0; margin: 0; }
+.footer-links li { margin-bottom: 12px; }
+.footer-links a { color: #888; text-decoration: none; transition: color 0.2s; }
+.footer-links a:hover { color: #fff; }
+.footer-bottom { text-align: center; padding-top: 20px; border-top: 1px solid var(--border-color); color: #555; font-size: 0.9em; }
+
+@media (max-width: 768px) {
+    .footer-content { grid-template-columns: 1fr; }
+    .subscribe-form { flex-direction: column; }
 }
 
 @media (max-width: 900px) {
