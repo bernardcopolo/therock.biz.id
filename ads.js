@@ -2,68 +2,135 @@
  * ==============================================================================
  * CENTRAL DIRECT LINK & ADS MANAGER (TheRock Tech - therock.biz.id)
  * ==============================================================================
- * Cukup masukkan URL Direct Link Anda di baris di bawah ini SATU KALI SAJA.
- * Pengaturan ini otomatis berlaku untuk Beranda dan SEMUA 147 Artikel!
+ * Mengontrol Direct Link iklan untuk Beranda dan SEMUA 147 Halaman Artikel.
  * ==============================================================================
  */
 
-// 1. MASUKKAN LINK IKLAN DIRECT LINK ANDA DI SINI:
-const DIRECT_LINK_URL = "https://www.profitablecpmratenetwork.com/MASUKKAN_LINK_ANDA_DI_SINI";
+// 1. URL DIRECT LINK IKLAN:
+const DIRECT_LINK_URL = "https://tutaniaunfastrothermuck.com/M6rGl90fb3b0d4cb493085b8b22b4a24cce7095a43604?q={QUERY}";
 
-// 2. PILIH METODE PENGALIHAN (Ubah true/false sesuai strategi Anda):
+// 2. KONFIGURASI PERILAKU:
 const CONFIG = {
-    // [Mode 1] AUTO REDIRECT: Begitu halaman dibuka, langsung dialihkan ke direct link
-    autoRedirect: true,
-    redirectDelayMs: 0, // 0 = instan tanpa jeda, 1000 = jeda 1 detik
+    // Arahkan ke direct link begitu pengunjung mengklik link/kartu artikel
+    redirectOnArticleClick: true,
 
-    // [Mode 2] KLIK DI MANA SAJA (Click-Under): Direct link terbuka saat pengunjung klik pertama kali di layar
-    clickAnywhere: false,
-    openInNewTab: true, // true = buka tab baru (pengunjung tetap di web Anda), false = alihkan tab aktif
+    // Jika pengunjung langsung membuka halaman artikel (misal dari Google/sosmed),
+    // otomatis dialihkan juga ke direct link
+    redirectIfInsideArticle: true,
+    articleOpenDelayMs: 0, // 0 = instan
 
-    // [Mode 3] BACK BUTTON REDIRECT: Saat pengunjung menekan tombol 'Kembali' di browser, arahkan ke direct link
-    backButtonRedirect: false
+    // Opsi target buka:
+    // false = buka di tab yang sama (langsung masuk ke iklan)
+    // true = buka di tab baru
+    openInNewTab: false
 };
 
 // ==============================================================================
-// SISTEM ENGINE DIRECT LINK (JANGAN DIUBAH KECUALI PAHAM)
+// SISTEM ENGINE INTERCEPTOR & DIRECT LINK
 // ==============================================================================
 (function () {
-    const isLinkValid = DIRECT_LINK_URL && !DIRECT_LINK_URL.includes("MASUKKAN_LINK_ANDA_DI_SINI");
-    if (!isLinkValid) return;
+    if (!DIRECT_LINK_URL) return;
 
-    // Eksekusi Mode 1: Auto Redirect
-    if (CONFIG.autoRedirect) {
-        if (CONFIG.redirectDelayMs > 0) {
-            setTimeout(function () {
-                window.location.replace(DIRECT_LINK_URL);
-            }, CONFIG.redirectDelayMs);
-        } else {
-            window.location.replace(DIRECT_LINK_URL);
-        }
+    // Helper untuk membuat URL final dengan query yang relevan
+    function buildAdUrl(keyword) {
+        let cleanKeyword = (keyword || "Technology").trim();
+        return DIRECT_LINK_URL.replace("{QUERY}", encodeURIComponent(cleanKeyword));
     }
 
-    // Eksekusi Mode 2: Klik Pertama di Mana Saja
-    if (CONFIG.clickAnywhere) {
-        let hasTriggered = false;
-        function handleClick() {
-            if (!hasTriggered) {
-                hasTriggered = true;
-                if (CONFIG.openInNewTab) {
-                    window.open(DIRECT_LINK_URL, "_blank");
-                } else {
-                    window.location.href = DIRECT_LINK_URL;
-                }
+    // Helper untuk mendeteksi keyword dari elemen link/kartu artikel yang diklik
+    function getKeywordFromElement(linkElement) {
+        // 1. Cari badge kategori di dalam kartu/elemen terdekat
+        const container = linkElement.closest(".hero-section, .trending-item, .category-card, .rek-card, .article-header, div");
+        if (container) {
+            const badge = container.querySelector(".category-badge, .cat");
+            if (badge && badge.textContent.trim()) {
+                return badge.textContent.trim();
             }
         }
-        window.addEventListener("click", handleClick, { once: true });
-        window.addEventListener("touchstart", handleClick, { once: true });
+
+        // 2. Cari alt gambar jika link berupa gambar
+        const img = linkElement.querySelector("img");
+        if (img && img.getAttribute("alt")) {
+            return img.getAttribute("alt");
+        }
+
+        // 3. Gunakan teks link atau heading di dalamnya
+        const text = linkElement.textContent.trim();
+        if (text && text.length > 2 && text.length < 120) {
+            return text;
+        }
+
+        return "Technology";
     }
 
-    // Eksekusi Mode 3: Back Button Redirect
-    if (CONFIG.backButtonRedirect) {
-        history.pushState(null, null, location.href);
-        window.addEventListener("popstate", function () {
-            window.location.replace(DIRECT_LINK_URL);
-        });
+    // Navigasi ke URL iklan
+    function navigateToAd(targetUrl) {
+        if (CONFIG.openInNewTab) {
+            window.open(targetUrl, "_blank");
+        } else {
+            window.location.href = targetUrl;
+        }
+    }
+
+    // --------------------------------------------------------------------------
+    // A. INTERCEPT KLIK PADA LINK ARTIKEL (Beranda & seluruh halaman)
+    // --------------------------------------------------------------------------
+    if (CONFIG.redirectOnArticleClick) {
+        document.addEventListener("click", function (e) {
+            // Cek apakah elemen yang diklik adalah link <a> atau berada di dalam <a>
+            const link = e.target.closest("a");
+            if (!link) return;
+
+            const href = link.getAttribute("href") || "";
+
+            // Deteksi apakah link tersebut mengarah ke artikel (articles/article*.html atau mengandung article)
+            const isArticleLink = href.includes("articles/") || 
+                                  href.includes("article") || 
+                                  (href.endsWith(".html") && !href.includes("index.html"));
+
+            if (isArticleLink) {
+                // Cegah pembukaan artikel biasa
+                e.preventDefault();
+                e.stopPropagation();
+
+                // Ambil keyword dari artikel yang diklik
+                const keyword = getKeywordFromElement(link);
+                const adUrl = buildAdUrl(keyword);
+
+                // Langsung masuk ke direct link iklan!
+                navigateToAd(adUrl);
+            }
+        }, true);
+    }
+
+    // --------------------------------------------------------------------------
+    // B. AUTO REDIRECT JIKA PENGUNJUNG MEMBUKA HALAMAN ARTIKEL SECARA LANGSUNG
+    // --------------------------------------------------------------------------
+    const isInsideArticlePage = window.location.pathname.includes("articles/") || 
+                                window.location.pathname.includes("article");
+
+    if (CONFIG.redirectIfInsideArticle && isInsideArticlePage) {
+        // Ambil topik dari halaman artikel ini
+        let articleKeyword = "Technology";
+        const badge = document.querySelector(".category-badge");
+        const h1 = document.querySelector("h1");
+
+        if (badge && badge.textContent.trim()) {
+            articleKeyword = badge.textContent.trim();
+        } else if (h1 && h1.textContent.trim()) {
+            articleKeyword = h1.textContent.trim();
+        } else if (document.title) {
+            articleKeyword = document.title.split("|")[0].trim();
+        }
+
+        const adUrl = buildAdUrl(articleKeyword);
+
+        if (CONFIG.articleOpenDelayMs > 0) {
+            setTimeout(function () {
+                window.location.replace(adUrl);
+            }, CONFIG.articleOpenDelayMs);
+        } else {
+            window.location.replace(adUrl);
+        }
     }
 })();
