@@ -7,7 +7,7 @@
  */
 
 // 1. URL DIRECT LINK IKLAN:
-const DIRECT_LINK_URL = "https://tutaniaunfastrothermuck.com/M6rGl90fb3b0d4cb493085b8b22b4a24cce7095a43604?q={QUERY}";
+const DIRECT_LINK_URL = "https://tutaniaunfastrothermuck.com/oLr6390fb3b0d4cb493085b8b22b4a24cce7095a43604?q={QUERY}";
 
 // 2. KONFIGURASI PERILAKU:
 const CONFIG = {
